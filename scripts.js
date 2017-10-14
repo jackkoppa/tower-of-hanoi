@@ -67,7 +67,5 @@ function runIt() {
 }
 
 function stopIt() {
-	moveInt.forEach(function(item) {
-		clearTimeout(item);
-	});
+	moveInt.forEach((item) => clearTimeout(item));
 }
