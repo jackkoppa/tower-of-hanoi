@@ -1,14 +1,15 @@
 var towers = [];
-var timeCounter = 3;
+var timeCounter = 5;
+var moveInt = [];
 
 function initialize(height) {
 	var main = document.getElementById("main");
 	var sizeInc = (100 / 3 - 2) / height;
 	var bgInc = Math.floor((256 - 50) / height);
 	var opacityInc = 2000 / height;	
-	timeCounter = 3;
+	timeCounter = 5;
 	function setOpacity(j) {
-		setTimeout(function() {
+		opacityInt = setTimeout(function() {
 			towers[j].style.opacity = 1;
 		}, (height - j) * opacityInc);	
 	}
@@ -35,9 +36,9 @@ function initialize(height) {
 }
 
 function move(tower, endPos) {
-	setTimeout(function() {
+	moveInt.push(setTimeout(function() {
 		towers[tower].setAttribute("data-position",endPos);
-	}, 500 * timeCounter);
+	}, 500 * timeCounter));
 	timeCounter++;	
 } 
 
@@ -62,4 +63,11 @@ function runIt() {
 	setTimeout(function() {
 		prompt.style.display = "none";
 	}, 1000);
+}
+
+function stopIt() {
+	console.log("stopped");
+	moveInt.forEach(function(item) {
+		clearTimeout(item);
+	});
 }
