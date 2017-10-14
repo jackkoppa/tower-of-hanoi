@@ -31,44 +31,58 @@ function initialize(height) {
 		document.getElementById("main").appendChild(towers[i]);
 	} 
 	
+	return setOpacity();
 }
 
 function setOpacity() {
-	towers.forEach((tower, i) => {
-		setTimeout(() => tower.style.opacity = 1, (towers.length - i) * (loadTime / towers.length));
-	});
+	return towers.reduce((promise, tower) => {
+		return promise.then(() => {
+			return new Promise(resolve => {
+				setTimeout(() => {
+					tower.style.opacity = 1;
+					resolve();
+				}, loadTime / towers.length);
+			});
+		});
+	}, Promise.resolve());
+	// towers.forEach((tower, i) => {
+	// 	setTimeout(() => tower.style.opacity = 1, (towers.length - i) * (loadTime / towers.length));
+	// });
 }
 
 function move(tower, endPos) {
-	moveInt.push(setTimeout(() => {
-		towers[tower].setAttribute("data-position",endPos);
-	}, moveTime * timeCounter));
-	timeCounter++;	
+	return new Promise(resolve => {
+		moveInt.push(setTimeout(() => {
+			towers[tower].setAttribute("data-position",endPos);
+			resolve();
+		}, moveTime));
+		timeCounter++;
+	})
 } 
 
 function hanoi(startPos, endPos, midPos, height) {
-	if (height === 1) move(0, endPos);
-	else {
-		hanoi(startPos, midPos, endPos, height - 1);
-		move(height - 1, endPos);
-		hanoi(midPos, endPos, startPos, height - 1);
-	} 
+	return new Promise(resolve => {
+		if (height === 1) move(0, endPos).then(() => resolve());
+		else {
+			hanoi(startPos, midPos, endPos, height - 1)
+				.then(() => move(height - 1, endPos))
+				.then(() => hanoi(midPos, endPos, startPos, height - 1))
+				.then(() => resolve());			
+		}
+	});
 } 
 
 function run(e) {	
 	var towersNum = document.getElementById("towers").value;
 	if(towersNum > 20) return false;
-	initialize(towersNum);
 	hide('prompt');
-	setOpacity();
-	hanoi('1','3','2',towersNum);
+	initialize(towersNum)
+		.then(() => hanoi('1','3','2',towersNum));
 	return false;
 }
 
 function hide(id) {
-	let el = document.getElementById(id)
-	el.style.display = 'none';
-	el.style.opacity = 0;
+	document.getElementById(id).style.display = 'none';
 }
 
 function show(id) {
