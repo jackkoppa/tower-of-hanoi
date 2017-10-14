@@ -45,11 +45,13 @@ function move(tower, endPos) {
 function hanoi(startPos, endPos, midPos, height) {
 	if (height === 1) {
 		move(0, endPos);
+		return Promise.resolve();
 	} 
 	else {
 		hanoi(startPos, midPos, endPos, height - 1);
 		move(height - 1, endPos);
 		hanoi(midPos, endPos, startPos, height - 1);
+		return Promise.resolve();
 	} 
 } 
 
@@ -58,15 +60,13 @@ function runIt() {
 	if(towersNum > 20) return false;
 	var prompt = document.getElementById("prompt");
 	initialize(towersNum);
-	hanoi('1','3','2',towersNum);	
-	prompt.style.opacity = "0";
-	setTimeout(function() {
+	hanoi('1','3','2',towersNum).then(() => {
+		prompt.style.opacity = "0";
 		prompt.style.display = "none";
-	}, 1000);
+	});	
 }
 
 function stopIt() {
-	console.log("stopped");
 	moveInt.forEach(function(item) {
 		clearTimeout(item);
 	});
