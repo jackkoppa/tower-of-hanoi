@@ -1,22 +1,20 @@
 var towers = [];
-var timeCounter = 5;
+var loadTime = 2000;
+var moveTime = 500;
 var moveInt = [];
+var timeCounter;
+
+function clearMain() {	
+	var main = document.getElementById("main");
+	while(main.firstChild) main.removeChild(main.firstChild);
+}
 
 function initialize(height) {
-	var main = document.getElementById("main");
+	timeCounter = Math.ceil(loadTime / moveTime) + 1;
 	var sizeInc = (100 / 3 - 2) / height;
-	var bgInc = Math.floor((256 - 50) / height);
-	var opacityInc = 2000 / height;	
-	timeCounter = 5;
-	function setOpacity(j) {
-		opacityInt = setTimeout(function() {
-			towers[j].style.opacity = 1;
-		}, (height - j) * opacityInc);	
-	}
+	var bgInc = Math.floor((256 - 50) / height);		
 
-	while(main.firstChild) {
-		main.removeChild(main.firstChild);
-	}
+	clearMain();
 	for (var i = 0; i < height; i++) {
 		towers[i] = document.createElement("div");
 		towers[i].id = i + 1;
@@ -31,41 +29,64 @@ function initialize(height) {
 		inner.style.width = sizeInc * (i + 1) + "vh";
 		towers[i].appendChild(inner);
 		document.getElementById("main").appendChild(towers[i]);
-		setOpacity(i);
 	} 
+	
+}
+
+function setOpacity() {
+	towers.forEach((tower, i) => {
+		setTimeout(() => tower.style.opacity = 1, (towers.length - i) * (loadTime / towers.length));
+	});
 }
 
 function move(tower, endPos) {
-	moveInt.push(setTimeout(function() {
+	moveInt.push(setTimeout(() => {
 		towers[tower].setAttribute("data-position",endPos);
-	}, 500 * timeCounter));
+	}, moveTime * timeCounter));
 	timeCounter++;	
 } 
 
 function hanoi(startPos, endPos, midPos, height) {
-	if (height === 1) {
-		move(0, endPos);
-		return Promise.resolve();
-	} 
+	if (height === 1) move(0, endPos);
 	else {
 		hanoi(startPos, midPos, endPos, height - 1);
 		move(height - 1, endPos);
 		hanoi(midPos, endPos, startPos, height - 1);
-		return Promise.resolve();
 	} 
 } 
 
-function runIt() {	
+function run(e) {	
 	var towersNum = document.getElementById("towers").value;
 	if(towersNum > 20) return false;
-	var prompt = document.getElementById("prompt");
 	initialize(towersNum);
-	hanoi('1','3','2',towersNum).then(() => {
-		prompt.style.opacity = "0";
-		prompt.style.display = "none";
-	});	
+	hide('prompt');
+	setOpacity();
+	hanoi('1','3','2',towersNum);
+	return false;
 }
 
-function stopIt() {
+function hide(id) {
+	let el = document.getElementById(id)
+	el.style.display = 'none';
+	el.style.opacity = 0;
+}
+
+function show(id) {
+	document.getElementById(id).style.display = 'inline';
+}
+
+function stop() {
+	hide('stop');
 	moveInt.forEach((item) => clearTimeout(item));
+	show('reset');
+}
+
+function reset() {
+	hide('reset');
+	clearMain();
+	towers = [];
+	moveInt = [];
+	timeCounter = 0;
+	show('prompt');
+	show('stop');
 }

@@ -19,6 +19,20 @@ main {
 	width: calc(100% - 40px);
 }
 
+button {
+	background-color: transparent;
+	border: 2px solid #222;
+	cursor: pointer;
+	font-family: "Courier New", Courier, monospace;
+	padding: 10px;
+	text-align: center;
+	transition: 0.25s background-color;
+	vertical-align: middle;
+}
+button:hover {
+	background-color: rgb(200,200,200);
+}
+
 .slot {
 	flex-basis: 0;
 	flex-grow: 1;
@@ -89,26 +103,8 @@ main {
 	z-index: 1050;
 }
 
-.message h1 {
-
-}
-
 .message input {
 	padding: 10px;
 	text-align: center;
 	vertical-align: middle;
-}
-
-.message button {
-	background-color: transparent;
-	border: 2px solid #222;
-	cursor: pointer;
-	font-family: "Courier New", Courier, monospace;
-	padding: 10px;
-	text-align: center;
-	transition: 0.25s background-color;
-	vertical-align: middle;
-}
-.message button:hover {
-	background-color: rgb(200,200,200);
 }
