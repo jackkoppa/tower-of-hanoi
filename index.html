@@ -8,7 +8,7 @@
 	<main id="main"></main>
 	<aside id="prompt">
 		<div class="backdrop"></div>
-		<form class="message" onsubmit="return run()">
+		<form class="message" onsubmit="event.preventDefault(); return run()">
 			<h1>How many towers would you like to run?</h1>
 			<input type="number" name="towers" value="3" min="1" max="20" id="towers">
 			<button type="submit">Run it!</button>
