@@ -35,7 +35,8 @@ function initialize(height) {
 }
 
 function setOpacity() {
-	return towers.reduce((promise, tower) => {
+	let reversedTowers = towers.slice(0).reverse();
+	return reversedTowers.reduce((promise, tower) => {
 		return promise.then(() => {
 			return new Promise(resolve => {
 				setTimeout(() => {
@@ -45,9 +46,6 @@ function setOpacity() {
 			});
 		});
 	}, Promise.resolve());
-	// towers.forEach((tower, i) => {
-	// 	setTimeout(() => tower.style.opacity = 1, (towers.length - i) * (loadTime / towers.length));
-	// });
 }
 
 function move(tower, endPos) {
@@ -77,7 +75,8 @@ function run(e) {
 	if(towersNum > 20) return false;
 	hide('prompt');
 	initialize(towersNum)
-		.then(() => hanoi('1','3','2',towersNum));
+		.then(() => hanoi('1','3','2',towersNum))
+		.then(() => stop());
 	return false;
 }
 
